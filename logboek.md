@@ -1,0 +1,4 @@
+## 08 julie 2026
+Vandaag ben ik gestart met de tutorial. Ik heb de eerste game variables aangemaakt, een game window opgezet en de main game loop geschreven. De while loop zorgt ervoor dat het spel blijft draaien zolang ‘run’ true is. Verder heb ik de draw game functie gevolgd waarin de knoppen en scoretekst op het scherm getekend worden. In deze functie heb ik de parameter naam 'active' gebruikt in plaats van 'act' zoals in de tutorial, omdat ik die naam duidelijker en makkelijker te begrijpen vind.
+
+Ik ben geraakt tot het onderdeel waarin de deal button wordt afgehandeld. Tijdens het volgen van de tutorial heb ik ondertitels aangezet en belangrijke uitleg als commentaar bij de juiste regel code gezet. Zo kan ik later makkelijker begrijpen wat de code doet en sneller verder werken. Volgende keer werk ik verder vanaf dat punt.
