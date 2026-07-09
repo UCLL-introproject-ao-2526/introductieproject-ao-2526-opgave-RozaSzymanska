@@ -1,5 +1,4 @@
 # import the modules - import statements will always go at the top
-# "if you know you are going to have some kind of RNG like in this case shuffling the deck and we know we are going to want to make copies of the deck so we dont overwrite our original one we want to import copy and random in the beginning." 
 
 import copy
 import random
@@ -12,8 +11,6 @@ pygame.init()
 cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 one_deck = 4 * cards
 decks = 4
-# create a copy of the full game deck
-game_deck = copy.deepcopy(decks * one_deck)
 
 # setting up a pygame window
 WIDTH = 600
@@ -29,11 +26,72 @@ timer = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 44)
 smaller_font = pygame.font.Font('freesansbold.ttf', 36)
 
-active = True
+active = False
 # win, loss, draw/tie
 records = [0, 0, 0]
 player_score = 0
 dealer_score = 0
+initial_deal = False
+my_hand = []
+dealer_hand = []
+outcome = 0
+reveal_dealer = False
+hand_active = False
+
+# deal cards by selecting randomly from deck, and make function for one card at a time
+def deal_cards(current_hand, current_deck):
+    # it picks a random card from the deck
+    card = random.randint(0, len(current_deck))
+    current_hand.append(current_deck[card-1])
+    current_deck.pop(card-1)
+    return current_hand, current_deck
+
+# draw scores for player and dealer on screen
+def draw_scores(player, dealer):
+    screen.blit(font.render(f'Score[{player}]', True, 'white'), (350, 400))
+    if reveal_dealer:
+        screen.blit(font.render(f'Score[{dealer}]', True, 'white'), (350, 100))
+
+# draw cards visually onto screen
+def draw_cards(player, dealer, reveal):
+    for i in range(len(player)):
+        pygame.draw.rect(screen, 'white', [70 + (70 * i), 460 + (5 * i), 120, 220], 0, 5)
+        screen.blit(font.render(player[i], True, 'black'), (75 + 70 * i, 465 + 5 * 1))
+        screen.blit(font.render(player[i], True, 'black'), (75 + 70 * i, 635 + 5 * 1))
+        pygame.draw.rect(screen, 'red', [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5)
+    
+    # if player hasn't finished turn, dealer will hide one card
+    for i in range(len(dealer)):
+        pygame.draw.rect(screen, 'white', [70 + (70 * i), 160 + (5 * i), 120, 220], 0, 5)
+        if i != 0 or reveal:
+            screen.blit(font.render(dealer[i], True, 'black'), (75 + 70 * i, 165 + 5 * 1))
+            screen.blit(font.render(dealer[i], True, 'black'), (75 + 70 * i, 335 + 5 * 1))
+        else:
+            screen.blit(font.render('???', True, 'black'), (75 + 70 * i, 165 + 5 * 1))
+            screen.blit(font.render('???', True, 'black'), (75 + 70 * i, 335 + 5 * 1))
+        pygame.draw.rect(screen, 'blue', [70 + (70 * i), 160 + (5 * i), 120, 220], 5, 5)
+
+def calculate_score(hand):
+    # calculate hand score fresh every time, check how many aces we have
+    hand_score = 0
+    aces_count = hand.count('A')
+    for i in range(len(hand)):
+        # for 2, 3, 4, 5, 6, 7, 8, 9 - just add the number to total
+        for j in range(8):
+            if hand[i] == cards[j]:
+                hand_score += int(hand[i])
+        # for 10 and face cards, add 10
+        if hand[i] in ['10', 'J', 'Q', 'K']:
+            hand_score += 10
+        # for aces start by adding 11, we'll check if we need to reduce afterwards
+        elif hand[i] == 'A': 
+            hand_score += 11
+    # determine how many aces need to be 1 instead of 11 to get under 21 if possible
+    if hand_score > 21 and aces_count > 0:
+        for i in range(aces_count):
+            if hand_score > 21:
+                hand_score -= 10
+    return hand_score
 
 # draw game conditions and buttons
 def draw_game(active, record):
@@ -67,16 +125,64 @@ def draw_game(active, record):
 
 # main game loop
 run = True
-while run: #the code will repeat ass long the game is running 
+while run:
     # control the frame rate and draw the background
     timer.tick(fps)
     screen.fill('black')
+    # initial deal to player and dealer
+    if initial_deal:
+        for i in range(2):
+            my_hand, game_deck = deal_cards(my_hand, game_deck)
+            dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)  
+        initial_deal = False
+    # once game is activated, and dealt -> calculate scores and display cards
+    if active: 
+        player_score = calculate_score(my_hand)
+        draw_cards(my_hand, dealer_hand, reveal_dealer)
+        # only calculate the dealers score after revealing the cards, when the player has finnished
+        if reveal_dealer:
+            dealer_score = calculate_score(dealer_hand)
+            if dealer_score < 17:
+                dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
+        draw_scores(player_score, dealer_score)
     buttons = draw_game(active, records)
 
-    # check if the player closed the game window
+    
     for event in pygame.event.get():
+        # close the game window
         if event.type == pygame.QUIT:
-            run = False #if we hit the quit button we want to run to be equal to False
+            run = False
+        # check for mouse clicks
+        if event.type == pygame.MOUSEBUTTONUP:
+            # only allow clicking DEAL when no game is running
+            if not active:
+                # check if the DEAL button was clicked
+                if buttons[0].collidepoint(event.pos):
+                    # start a new game
+                    active = True
+                    # deals the first two cards in the next loop
+                    initial_deal = True
+                    # create a copy of the full game deck
+                    game_deck = copy.deepcopy(decks * one_deck)
+                    # resets both hands
+                    my_hand = []
+                    dealer_hand = []
+                    # reset the game result
+                    outcome = 0
+                    hand_active = True
+            else:
+                # if player can hit, allow them to draw a card
+                if buttons[0].collidepoint(event.pos) and player_score < 21 and hand_active:
+                    my_hand, game_deck = deal_cards(my_hand, game_deck)
+                # allow player to end turn (stand)
+                elif buttons[1].collidepoint(event.pos) and not reveal_dealer:
+                    reveal_dealer = True
+                    hand_active = False
+        # if player busts, automatically end turn - treat like a stand 
+        if hand_active and player_score >= 21:
+            hand_active = False
+            reveal_dealer = True
+
     # it allows a portion of the screen to be updated, instead of the entire area.
     pygame.display.flip()
 pygame.quit()
