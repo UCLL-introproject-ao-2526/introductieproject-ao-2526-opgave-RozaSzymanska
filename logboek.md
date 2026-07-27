@@ -33,3 +33,31 @@ probleem 3: De knop 'stand' werkte niet
     In het begin reageerde de knop 'stand' niet wanneer ik erop klikte. Ik heb dit probleem als laatste gehouden, omdat de andere fouten eenvoudiger leken om op te lossen. Toen ik het spel verder aan het testen was, bleek de knop uiteindelijk weer correct te werken. Ik weet niet exact wat dit probleem heeft opgelost. 
 
 Nadat ik deze fouten had opgelost heb ik het spel nog enkele keren getest. Ik had geen andere fouten opgemerkt. De grafische afwerking is niet volledig uitgewerkt maar dat ga ik waarschijnlijk verbeteren in de uitbreidingsfase. 
+
+EIGEN UITBREIDING
+
+## 23 julie 2026 - 27 julie 2026
+
+Eerst besloot ik om het design van de spel te veranderen. Hiervoor heb ik inspiratie gezocht op google. Uiteindelijk heb ik een ontwerp gevonden dat mij aansprak, namelijk: https://medium.com/strategio/cv-project-blackjack-game-d128730eff4b 
+Ik heb ervoor gekozen om die als inspiratiebron te gebruiken voor een paar elementen van het spel.
+
+Eerste stap was het vergroten van de breedte van het spelvenster en het aanpassen van de achtergrondkleur naar donkergroen, zodat het meer lijkt op een echte Blackjack tafel. Daarna heb ik de tekst op de startknop gewijzigd van "DEAL HAND" naar "Start Game", omdat ik hoofdletters minder mooi vond en de nieuwe tekst duidelijker is voor de gebruiker.
+
+Daarnaast heb ik een titel toegevoegd aan het startscherm en twee speelkaarten als decoratie geplaatst, een boven en een onder de titel, net zoals in mjin inspiratieontwerp. Hiervoor heb ik een vectorafbeelding met vrije licentie gebruikt. Ik heb de uitleg om een afbeelding toe te voegen aan een pygame hier gevonden: https://pythonprogramming.net/displaying-images-pygame .Vervolgens zocht ik op hoe ik de kaarten kon roteren, hiervoor heb ik deze website gevonden: https://www.pygame.org/docs/ref/transform.html#pygame.transform.rotate Daar heb ik op de search examples geklikt wat mij naar een Github pagina bracht en daar vond ik genoeg voorbeelden om het uit te proberen in mijn code.
+
+Na het startscherm heb ik het speelscherm aangepast. Als eerste heb ik de hit me en stand knoppen dezelfde stijl gegeven als de startknop en ze opnieuw gepositioneerd zodat de in het midden staan in de bredere spelweergave. 
+Het was een beetje prullen omdat ik telkens de positie van de tekst moest aanpassen wanneer ik de knoppen verplaatste, dus ik heb gezocht of er een optie is om die tekst te centreren ten opzichte van de knop zelf zoals het ook mogelijk is in css. Hiervoor heb ik verschillende bronnen geraadpleegd maar de meest helpende website was deze: https://stackoverflow.com/questions/23982907/how-to-center-text-in-pygame 
+
+Daarnaast heb ik de kaarten naast elkaar gepositioneerd in plaats van op elkaar wat mij meer aansprak. Dan heb ik de verborgen dealerkaart aangepast, in plaats van drie vraagtekens heb ik de achterkant van een spelkaart weergegeven zoals op het startscherm. Ik heb ook de rode en blauwe randen rond de kaarten verwijdert. Dan heb ik de lettertype van de kaarten verkleind door gebruik te maken van smaller_font. De onderste getal op de kaart heb ik meer naar rechts geplaatst. Bij de kaart met waarde 10 komt de tekst soms uit de kaart. Ik heb ervoor gekozen om dit zo te laten omdat het opschuiven naar links er voor zal zorgen dat de kaarten met 1 cijfer minder mooi uitgelijnd zouden worden.
+
+Vervolgens heb ik gewerkt aan de weergave van het resultaat. Hiervoor heb ik de new hand knop dezelfde opmaak gegeven als de overige knoppen en die te verplaatsen naar beneden. Het probleem was dat de oude knoppen zichtbaar bleven wanneer een hand afgelopen was. Eerst heb ik dus de knoppen en kaarten naar beneden verschoven zodat de resultaat zin onder de scoreboard kan verschijnen. Wat betreft de knoppen had ik een idee om hiervoor een apart resultaatscherm te maken waarop alleen de new hand knop wordt weergegeven.
+
+Hier zat ik het langst vast want in de code werd de overgang tussen het startscherm en de speelscherm overgeschakeld door de boolean variabele active. Wanneer active gelijk was aan False, werd het startscherm weergegeven. Wanneer active gelijk was aan True, werd het speelscherm getoond. Maar voor mijn idee had ik een derde scherm nodig die de resultaatscherm zal tonen en ik wist niet hoe ik precies het in elkaar moest krijgen alleen met die active variabele. Daarom heb ik ervoor gekozen om een nieuwe variabele te gebruiken: game_status. Zo kon ik veel makkelijker bepalen welk scherm moest worden weergegeven. Hiervoor heb ik drie waardes voor gebruikt, namelijk: start, playing en result. 
+
+Om deze wijziging in te voeren heb ik de volledige code van begin tot einde overlopen en alle controles aangepast die gebruikmaakten van de variabele active. In de functie draw_game() heb ik eerst de parameter active vervangen door game_status. De if not active controle en de else structuur heb ik vervangen door if game_status == "start", "playing" en "result". Hierdoor heb ik de code voor het tekenen van de resultaatscherm rechtstreeks in de result controle toegevoegd. Daarnaast heb ik ook enkele variabelen hernoemd zodat ze duidelijker beschrijven waarvoor ze dienen. Bv. variabele deal heb ik gewijzigd naar start_btn en deal_text naar start_btn_text. 
+
+In de while loop heb ik alle controles met active verwijdert en vervangen door controles op game_status. Ik heb ook onderaan een extra controle toegevoegd. Wanneer de functie check_endgame() een outcome teruggeeft die niet 0 is en terwijl het spel zich nog in de status "playing" bevindt, wordt de game_status automatisch gewijzigd naar result. Hierdoor verschijnt het resultaatscherm automatisch zodra een hand is afgelopen. 
+
+Na een paar keer testen van het spel heb ik toch ook de scoretekst in kleinere font gezet en van score[] heb ik dealer of player bijgeschreven zodat het iets duidelijker is van wie die punten zijn en ook heb ik die aan de linkerkant uitgeleind zodat ze minder storen tijdens het spelen. 
+
+Ten slotte heb ik in de event-loop de knoppen duidelijkere namen gegeven zoals start_btn, hit_btn, stand_btn en new_hand_btn. Hierdoor is het voor mij duidelijker over welke knop het gaat.
