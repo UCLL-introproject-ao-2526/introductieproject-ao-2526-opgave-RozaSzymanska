@@ -1,14 +1,20 @@
-# import the modules - import statements will always go at the top
 
 import copy
 import random
+import time
+import math
 import pygame
 
-# game variables
-# initialize all pygame modules that are required for the game (graphics, fonts, sounds)
 pygame.init()
 cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-one_deck = 4 * cards
+
+symbols = ["spades", "hearts", "diamonds", "clubs"]
+deck = []
+
+for value in cards:
+    for suit in symbols:
+        deck.append(f"{value}{suit}")   
+
 decks = 4
 
 WIDTH = 900
@@ -17,9 +23,7 @@ HEIGHT = 900
 screen = pygame.display.set_mode([WIDTH, HEIGHT])
 pygame.display.set_caption('Pygame Blackjack!')
 
-# Frames Per Seconds: controls how many times the game updates every second
 fps = 60 
-# clock that keep the game running at the chosen fps
 timer = pygame.time.Clock()
 
 font = pygame.font.Font('freesansbold.ttf', 44)
@@ -43,10 +47,21 @@ reveal_dealer = False
 hand_active = False
 add_score = False 
 results = ['', 'Player busted o_O', 'Player wins! :)', 'Dealer wins :(', 'Tie game...']
+show_fireworks = False
+
+colors = [
+    (255, 0, 0),
+    (0, 255, 0), 
+    (0, 0, 255),
+    (0, 255, 255),
+    (255, 165, 0),
+    (255, 255, 255),
+    (230, 230, 250),
+    (255, 192, 203)
+]
 
 # deal cards by selecting randomly from deck, and make function for one card at a time
 def deal_cards(current_hand, current_deck):
-    # it picks a random card from the deck
     card = random.randint(0, len(current_deck))
     current_hand.append(current_deck[card-1])
     current_deck.pop(card-1)
@@ -61,33 +76,42 @@ def draw_scores(player, dealer):
 # draw cards visually onto screen
 def draw_cards(player, dealer, reveal):
     for i in range(len(player)):
-        pygame.draw.rect(screen, 'white', [70 + (130 * i), 480, 120, 220], 0, 5)
-        screen.blit(smaller_font.render(player[i], True, 'black'), (77 + 130 * i, 480 + 5 * 1))
-        screen.blit(smaller_font.render(player[i], True, 'black'), (160 + 130 * i, 655 + 5 * 1))
+        card = pygame.image.load(f"img/{player[i]}.jpg")
+        card = pygame.transform.scale(card, (120, 220))
+        screen.blit(card, (70 + (130 * i), 480))
     
     # if player hasn't finished turn, dealer will hide one card
     for i in range(len(dealer)):
-        pygame.draw.rect(screen, 'white', [70 + (130 * i), 170, 120, 220], 0, 5)
         if i != 0 or reveal:
-            screen.blit(smaller_font.render(dealer[i], True, 'black'), (75 + 130 * i, 170 + 5 * 1))
-            screen.blit(smaller_font.render(dealer[i], True, 'black'), (145 + 130 * i, 345 + 5 * 1))
+            card = pygame.image.load(f"img/{dealer[i]}.jpg")
+            card = pygame.transform.scale(card, (120, 220))
+            screen.blit(card, (70 + (130 * i), 170))
         else:
             screen.blit(brown_card_img, (70 + 130 * i, 170))
+
+def get_card_value(card):
+    for value in cards:
+        if card.startswith(value):
+            return value
 
 def calculate_score(hand):
     # calculate hand score fresh every time, check how many aces we have
     hand_score = 0
-    aces_count = hand.count('A')
-    for i in range(len(hand)):
+    aces_count = 0
+    for card in hand:
+        value = get_card_value(card)
         # for 2, 3, 4, 5, 6, 7, 8, 9 - just add the number to total
+        if value == "A":
+            aces_count += 1
+            
         for j in range(8):
-            if hand[i] == cards[j]:
-                hand_score += int(hand[i])
+            if value == cards[j]:
+                hand_score += int(value)
         # for 10 and face cards, add 10
-        if hand[i] in ['10', 'J', 'Q', 'K']:
+        if value in ['10', 'J', 'Q', 'K']:
             hand_score += 10
         # for aces start by adding 11, we'll check if we need to reduce afterwards 
-        elif hand[i] == 'A': 
+        elif value == 'A': 
             hand_score += 11
     # determine how many aces need to be 1 instead of 11 to get under 21 if possible
     if hand_score > 21 and aces_count > 0:
@@ -131,9 +155,6 @@ def draw_game(game_status, record, result):
         screen.blit(stand_text, text_rect)
         button_list.append(stand)
 
-        #pygame.draw.rect(screen, 'darkgreen', [0, 0, 900, 100], 0)
-        #pygame.draw.rect(screen, 'grey', [0, 0, 900, 100], 3)
-
         score_text = smaller_font.render(f'Wins: {record[0]}     Losses: {record[1]}     Draws:  {record[2]}', True, 'white') 
         screen.blit(score_text, (200, 30))
 
@@ -151,35 +172,183 @@ def draw_game(game_status, record, result):
 
 # check endgame conditions function
 # outcome is results, records are totals 
-def check_endgame(hand_act, deal_score, play_score, result, totals, add):
+def check_endgame(hand_act, deal_score, play_score, outcome, totals, add):
     # check end game scenarios if player has stood, busted or blackjacked
     # result: 1- player bust, 2- win, 3- loss, 4- push
     if not hand_act and deal_score >= 17:
         if play_score > 21:
-            result = 1
+            outcome = 1
         elif deal_score < play_score <= 21 or deal_score > 21:
-            result = 2
+            outcome = 2
         elif play_score < deal_score <= 21:
-            result = 3
+            outcome = 3
         else: 
-            result = 4
+            outcome = 4
 
         if add:
-            if result == 1 or result == 3:
+            if outcome == 1 or outcome == 3:
                 totals[1] += 1
-            elif result == 2:
+            elif outcome == 2:
                 totals[0] += 1
             else: 
                 totals[2] += 1
             add = False
-    return result, totals, add
+    return outcome, totals, add
 
-# main game loop
+class Projectile:
+    width = 5
+    height = 10
+    alpha_decrement = 3
+
+    def __init__(self, x, y, x_vel, y_vel, color):
+        self.x = x
+        self.y = y
+        self.x_vel = x_vel
+        self.y_vel = y_vel
+        self.color = color
+        self.alpha = 255
+
+    def move(self):
+        self.x += self.x_vel
+        self.y += self.y_vel
+        self.alpha = max(0, self.alpha - self.alpha_decrement)
+
+    def draw(self, win):
+        self.draw_rect_alpha(win, self.color + (self.alpha,), (self.x, self.y, self.width, self.height))
+
+    @staticmethod
+    def draw_rect_alpha(surface, color, rect):
+        shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+        pygame.draw.rect(shape_surf, color, shape_surf.get_rect())
+        surface.blit(shape_surf, rect)
+
+class Firework:
+    radius = 10
+    max_projectiles = 50
+    min_projectiles = 25
+    projectile_vel = 4
+
+    def __init__(self, x, y, y_vel, explode_height, color):
+        self.x = x
+        self.y = y
+        self.y_vel = y_vel
+        self.explode_height = explode_height
+        self.color = color
+        self.projectiles = []
+        self.exploded = False
+
+    def explode(self):
+        self.exploded = True
+        num_projectiles = random.randrange(self.min_projectiles, self.max_projectiles)
+
+        if random.randint(0, 1) == 0:
+            self.create_circular_projectiles(num_projectiles)
+        else:
+            self.create_star_projectiles()
+
+    def create_circular_projectiles(self, num_projectiles):
+        angle_dif = math.pi*2 / num_projectiles
+        current_angle = 0
+        vel = random.randrange(self.projectile_vel -1, self.projectile_vel + 1)
+        for _ in range(num_projectiles):
+            x_vel = math.sin(current_angle) * vel
+            y_vel = math.cos(current_angle) * vel
+            color = random.choice(colors)
+            self.projectiles.append(Projectile(self.x, self.y, x_vel, y_vel, color))
+            current_angle += angle_dif
+
+    def create_star_projectiles(self):
+        angle_diff = math.pi/4
+        current_angle = 0
+        num_projectiles = 32
+        for i in range(1, num_projectiles + 1):
+            vel = self.projectile_vel + (i % (num_projectiles / 8))
+            x_vel = math.sin(current_angle) * vel
+            y_vel = math.cos(current_angle) * vel
+            color = random.choice(colors)
+            self.projectiles.append(Projectile(self.x, self.y, x_vel, y_vel, color))
+            if i % (num_projectiles / 8) == 0:
+                current_angle += angle_diff
+
+    def move(self, max_width, max_height):
+        if not self.exploded:
+            self.y += self.y_vel
+            if self.y <= self.explode_height:
+                self.explode()
+
+        projectiles_to_remove = []
+        for projectile in self.projectiles:
+            projectile.move()
+
+            if projectile.x >= max_width or projectile.x < 0:
+                projectiles_to_remove.append(projectile)
+            elif projectile.y >= max_height or projectile.y < 0:
+                projectiles_to_remove.append(projectile)
+
+        for projectile in projectiles_to_remove:
+            self.projectiles.remove(projectile)
+
+    def draw(self, win):
+        if not self.exploded:
+            pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+
+        for projectile in self.projectiles: 
+            projectile.draw(win)
+
+class Launcher:
+    width = 20
+    height = 20
+    color = 'grey'
+
+    def __init__(self, x, y, frequency):
+        self.x = x
+        self.y = y
+        self.frequency = frequency #ms
+        self.start_time = time.time()
+        self.fireworks = []
+
+    def draw(self, win):
+
+        for firework in self.fireworks:
+            firework.draw(win)
+
+    def launch(self):
+        color = random.choice(colors)
+        explode_height = random.randrange(50, 550)
+        firework = Firework(self.x + self.width/2, self.y, -10, explode_height, color)
+        self.fireworks.append(firework)
+
+    def loop(self, max_width, max_height):
+        current_time = time.time()
+        time_elapsed = current_time - self.start_time
+
+        if time_elapsed * 1000 >= self.frequency:
+            self.start_time = current_time
+            self.launch()
+
+        fireworks_to_remove = []
+        for firework in self.fireworks:
+            firework.move(max_width, max_height)
+            if firework.exploded and len(firework.projectiles) == 0:
+                fireworks_to_remove.append(firework)
+
+        for firework in fireworks_to_remove:
+            self.fireworks.remove(firework)
+
+launchers = [
+    Launcher(80, HEIGHT-20, 1800),
+    Launcher(250, HEIGHT-20, 2500),
+    Launcher(450, HEIGHT-20, 2200),
+    Launcher(650, HEIGHT-20, 3000),
+    Launcher(820, HEIGHT-20, 1700),
+]
+
 run = True
 while run:
     # control the frame rate and draw the background
     timer.tick(fps)
     screen.fill('darkgreen')
+
     # initial deal to player and dealer
     if initial_deal:
         for i in range(2):
@@ -199,6 +368,11 @@ while run:
         draw_scores(player_score, dealer_score)
     buttons = draw_game(game_status, records, outcome)
 
+    if show_fireworks:
+        for launcher in launchers:
+            launcher.loop(WIDTH, HEIGHT)
+            launcher.draw(screen)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -212,7 +386,7 @@ while run:
                     # start a new game
                     game_status = "playing"
                     initial_deal = True
-                    game_deck = copy.deepcopy(decks * one_deck)
+                    game_deck = copy.deepcopy(deck)
                     my_hand = []
                     dealer_hand = []
                     reveal_dealer = False
@@ -234,11 +408,12 @@ while run:
                 if new_hand_btn.collidepoint(event.pos):
                     game_status = "playing"
                     initial_deal = True
-                    game_deck = copy.deepcopy(decks * one_deck)
+                    game_deck = copy.deepcopy(deck)
                     my_hand = []
                     dealer_hand = []
                     reveal_dealer = False
                     hand_active = True
+                    show_fireworks = False
                     dealer_score = 0
                     player_score = 0
                     outcome = 0
@@ -253,6 +428,8 @@ while run:
 
     if outcome != 0 and game_status == "playing":
         game_status = "result"
+        if outcome == 2:
+            show_fireworks = True
 
     # it allows a portion of the screen to be updated, instead of the entire area.
     pygame.display.flip()

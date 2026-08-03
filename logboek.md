@@ -61,3 +61,38 @@ In de while loop heb ik alle controles met active verwijdert en vervangen door c
 Na een paar keer testen van het spel heb ik toch ook de scoretekst in kleinere font gezet en van score[] heb ik dealer of player bijgeschreven zodat het iets duidelijker is van wie die punten zijn en ook heb ik die aan de linkerkant uitgeleind zodat ze minder storen tijdens het spelen. 
 
 Ten slotte heb ik in de event-loop de knoppen duidelijkere namen gegeven zoals start_btn, hit_btn, stand_btn en new_hand_btn. Hierdoor is het voor mij duidelijker over welke knop het gaat.
+
+## 03 augustus 2026
+
+Om te starten heb ik het spel eerst opnieuw gespeeld om te zien of alles nog correct werkt. Tijdens het spelen kreeg ik het idee om de interface nog eens te veranderen naar echte afbeeldingen van speelkaarten. Ik wilde dat er met alle kaarten gespeeld werd, met alle vier symbolen en twee verschillende kleuren zodat het wat kleurrijker wordt. 
+
+Ik heb eerst een vectorafbeelding met alle speelkaarten gerbuikt. Daarna heb ik alle kaarten apart uitgeknipt en opgeslagen als aparte afbeeldingen. De bestandsnamen heb ik zo gekozen dat eerst de kaartwaarde staat, gevolgd door het symbool. Dit idee kende ik nog uit een oefening in javascript die ik ooit maakte, waar de naam van het bestand gebruikt werd om informatie uit af te leiden. En dan maakte ik ook een lijst met de vier symbolen.
+
+In mijn eerste poging gebruikte ik een for loop waarin ik een willekeurige index koos om een kaartwaarde en een symbool te selecteren. Maar dat bleek geen goede oplossing te zijn, omdat het geen volledige deck maakte en dezelfde kaart meerdere keren kon voorkomen. Dit heb ik opgelost met een geneste for loop waar ik eerst alle kaartwaarde doorloop en vervolgens alle symbolen waardoor elke mogelijke combinatie wordt gemaakt.
+
+Dan heb ik overal one_deck = 4 * cards vervangen door een kopie van de deck, omdat deck al alle kaarten bevat. Vervolgens heb ik in de functie draw_cards de witte rechthoek en de kaartwaarde verwijdert en in plaats daarvan de juiste kaartafbeelding geladen. 
+
+Daarna moest ik ook nog de scoreberekening aanpassen, omdat de kaarten nu bestandsnamen hebben zoals Qhearts kon de functie de kaartwaarde niet meer rechtstreeks uithalen. Daarom heb ik een aparte functie gemaakt: get_card_value gemaakt waar ik controleer of de bestandsnaam begint met een waarde uit de lijst cards. Dan geeft het de value terug om ermee verder te kunnen berekenen. 
+
+Tijdens het testen kwam ik verschillende fouten tegen die ik telkens rechtstreeks verbeterde. Voorbeelden van fouten: 
+
+Probleem 1: NameError
+    Ik wou de afbeelding van de kaarten schalen buiten de functie draw_cards zoals bij de afbeeldingen van de achterkant van de kaarten, maar de fout gaf aan dat de variabele card nog niet gedefinieerd was. Dus heb ik de schalen van de kaart in de functie gezet om de fout te vermijden. 
+
+Probleem 2: UnboundLocalError
+    Ik schreef: value = get_card_value(value) in de functie calculate_score terwijl value nog niet bestond. Ik verwarde de huidige kaart (card) met de kaartwaarde (value). 
+
+Probleem 3: FileNotFoundError
+    Ik gebruikte de extensie .png in plaats van .jpg in de kaartafbeeldingen waardoor Pygame de bestanden niet kon vinden. 
+
+Dan heb ik het spel opnieuw geprobeerd en merkte ik snel op dat na het klikken van new hand het spel opeens stopte. Er bleek dat ik op een plaats nog de oude variabele one_deck gebruikte in plaats van het nieuwe deck. Dan werkte alles weer opnieuw. 
+
+Ten slotte wou ik nog een speciaal effect toevoegen wanneer de speler een hand gewonnen heeft. Daarvoor ben ik op zoek gegaan naar een vuurwerkeffect en ben ik deze tutorial tegengekomen: https://www.youtube.com/watch?v=8nIi2x2m6yE&t=276s 
+
+Ik heb eerst de volledige code van de tutorial uitgewerkt in een apart bestand. Daarna heb ik nagedacht over welke delen ik precies nodig had en waar ik die in mijn eigen code moest toevoegen. Ik heb hiervoor eerst de nodige imports, classes en variabelen overgenomen. Vervolgens heb ik een variabele show_fireworks aangemaakt met als beginwaarde False. In tegenstelling tot het vuurwerkproject wil ik de vuurwerkeffecten alleen tonen wanneer de speler gewonnen heeft, dus ik moet kunnen bijhouden wanneer ze wel en niet mogen verschijnen. Ik heb deze variabele op True gezet wanneer de outcome gelijk is aan 2 en opnieuw op False wanneer de speler op de knop new hand klikt. 
+
+Daarna heb ik de launcher objecten aangemaakt en de for loop die de launchers bijwerkt en tekent in de main loop geplaatst. Deze heb ik genest in een if-controle zodat de vuurwerkeffecten alleen worden uitgevoerd wanneer show_fireworks op True staat.
+
+Na het uittesten merkte ik op dat het vuurwerk onder de kaarten werd getekend in plaats van erboven. Ik herinnerde mij direct dat ik vroeger op school in p5.js ook al eens een gelijkaardig probleem had. Ik wist nog dat dit te maken had met de volgorde waarin alles getekend wordt. Dus ik heb de code van de  launchers naar een lagere plaats in de main loop verplaatst, zodat het vuurwerk als laatste getekend wordt. En het heeft inderdaad het probleem opgelost. 
+
+Ten slotte heb ik ook nog de hoogte waarop de vuurpijlen ontploffen aangepast en ook de snelheid van de vuurpijlen. De rechthoek van de launcher heb ik ook verwijdert zodat alleen het vuurwerk zichtbaar blijft en het wat mooier eruitziet. 
