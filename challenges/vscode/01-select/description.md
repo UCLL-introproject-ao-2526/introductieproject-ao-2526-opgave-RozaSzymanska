@@ -10,8 +10,7 @@ Visual Studio Code (not to be confused with Visual Studio, which is a much bigge
 
 It can be useful to spend some time learning the text editing features of VSCode,
 more specifically, how to use keyboard shortcuts.
-
-In this series of challenges, we'll ask you to find out how to perform some common operations.
+In this series of challenges, we'll ask you to find out how to perf orm some common operations.
 
 ## Question
 
