@@ -1,0 +1,15 @@
+Hallo Daan,
+
+Ik stuur je deze e-mail om feedback te geven over het introductieproject en mijn ervaring ermee.
+
+De video over de elevator hacking vond ik heel interessant en boeiend. Ook vond ik het leuk om aan de blackjackgame te werken en ik besteedde er graag mijn tijd aan. 
+
+Ik had wel wat meer moeite met bepaalde challenges. Sommige opdrachten verliepen heel vlot, terwijl andere een stuk moeilijker waren. Soms wist ik niet goed hoe ik een opdracht moest aanpakken en in andere gevallen dacht ik dat ik het juiste antwoord had gevonden, maar bleek dat toch niet zo te zijn.
+
+Tijdens het maken van de opdrachten kwam ik wat errors tegen. Ik kreeg soms de foutmelding "HTTP Error 404: Not Found" wanneer ik mijn oplossing wilde verifieren. Daardoor kon ik bepaalde opdrachten niet correct testen. Ik heb die opdrachten dan voorlopig overgeslagen en ben verdergegaan met andere opdrachten waarbij die foutmelding niet voorkwam.
+
+Ik vond het tof dat we zelf konden kiezen welke opdrachten we wilden maken. En ook vond ik het fijn om de blackjackgame verder te kunnen uitbreiden met eigen ideeen. 
+
+Een punt dat voor mij minder duidelijk was, was de inschatting van de tijd. Ik dacht soms lang na over de logica achter een oplossing voordat ik het begon te programmeren. Daardoor vond ik het moeilijk om te bepalen of mijn werk kon worden beschouwd als twintig uur werk. Sommige stukken code waar ik een uur aan zat, zouden door iemand anders misschien in dertig minuten geschreven kunnen worden. Daarom vroeg ik me soms af of ik wel genoeg had gedaan.
+
+Over het algemeen vond ik het vak interessant. Ik vond het leuk dat we met verschillende onderwerpen konden kennismaken. 

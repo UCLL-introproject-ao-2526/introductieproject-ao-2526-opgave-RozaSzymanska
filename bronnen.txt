@@ -1,0 +1,20 @@
+Reflectie bij video: 
+Deviant Ollam & Howard Payne - Elevator Hacking - From the Pit to the Penthhouse
+link: https://www.youtube.com/watch?v=oHf1vD5_b5I
+
+ 
+De sprekers, Ollam en Howard, zijn de eigenaars van een pentestbedrijf waar ze in gebouwen breken. Deze conferentie focust zich op kwetsbaarheden, bedieningssystemen en beveiligingsaspecten van liften. 
+
+Veel gebouwen zetten hun liften in als onderdeel van hun beveiligingsmodel, en dat zouden ze niet moeten doen, omdat er veel kwetsbaarheden worden over het hoofd gezien. In een lift zijn er veel knoppen om naar een bepaalde verdieping te gaan. Dat is de automatische bediening. Het drukken van een knop vertelt de lift waarheen hij naartoe moet gaan. 
+
+Maar er is ook zoiets als onafhankelijke bediening, waarbij een lift via een sleutel uit de normale bedieningsgroep wordt gehaald en exclusief manueel wordt bediend. Dit wordt vaak gebruikt door penetratietesters om liften te beheersen, zonder dat iemand in het gebouw het opvalt. Er bestaan ook andere prioriteiten en speciale bedieningsmodi die vaak gebruikt worden voor VIP’s, in ziekenhuizen bij code blue en ook voor brandweermedewerkers.
+
+Ze gebruiken allemaal sleutels of badges, maar dat is geen veilige beveiliging aangezien sleutels en technische toegangsmiddelen vaak gestandaardiseerd zijn en makkelijk te kopieren. Daardoor kunnen dezelfde sleutels meerdere liften of functies bedienen. Sloten kunnen eenvoudig uit elkaar gehaald worden om de pininstelling te meten en nieuwe sleutels te maken. Dit kan allemaal leiden tot misbruik. 
+
+De sprekers zeggen dat voor het beheer en de veiligheid van liften strikte procedures, gecertificeerde technici en monitoring belangrijk zijn om het misbruik ervan te voorkomen. 
+
+Ik vond de presentatiesstijl heel tof. De sprekers gebruikten veel afbeeldingen, video's en praktijkvoorbeelden, waardoor de presentatie interessant bleef en de technische uitleg makkelijker te begrijpen was. 
+
+Ik ben het met hen eens dat liften niet als enige beveiligingsmaatregel gebruikt mogen worden, omdat er blijkbaar veel kwetsbaarheden bestaan die weinig mensen kennen. Hoewel dit interessant was voor beveiligingsspecialisten, vraag ik mij af of zulke informatie ook misbruikt kan worden door mensen met slechte bedoelingen. Toch denk ik dat het belangrijk is om deze kwetsbaarheden bekend te maken zodat ze opgelost kunnen worden. 
+
+De sprekers beweren dat de beveiligingsaspecten van liften te zwak zijn en het verbasend is hoe makkelijk ze te misbruiken zijn. Ze kwamen heel gepassioneerd over. 
