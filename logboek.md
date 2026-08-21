@@ -96,3 +96,28 @@ Daarna heb ik de launcher objecten aangemaakt en de for loop die de launchers bi
 Na het uittesten merkte ik op dat het vuurwerk onder de kaarten werd getekend in plaats van erboven. Ik herinnerde mij direct dat ik vroeger op school in p5.js ook al eens een gelijkaardig probleem had. Ik wist nog dat dit te maken had met de volgorde waarin alles getekend wordt. Dus ik heb de code van de  launchers naar een lagere plaats in de main loop verplaatst, zodat het vuurwerk als laatste getekend wordt. En het heeft inderdaad het probleem opgelost. 
 
 Ten slotte heb ik ook nog de hoogte waarop de vuurpijlen ontploffen aangepast en ook de snelheid van de vuurpijlen. De rechthoek van de launcher heb ik ook verwijdert zodat alleen het vuurwerk zichtbaar blijft en het wat mooier eruitziet. 
+
+# 21 augustus 2026
+Ik heb feedback gekregen over de code van de blackjackgame. 
+
+feedback #1    Vermijden van steeds dezelfde getallen
+Bij de afbeeldingen gebruikte ik bv. steeds dezelfde breedte en hoogte. Ik heb die daarom dus in variabelen gezet zoals het ook werd aangeraden. Ik heb dus de variabelen card_width en card_height aangemaakt en deze gebruikt bij het schalen van de kaarten.  
+
+feedback #3     Repetitie van draw_game()
+Dit is de grootste herhaling die ik zag:
+    hit_btn = pygame.draw.rect(screen, 'darkgreen', [200, 760, 240, 80], 0, 5)
+    pygame.draw.rect(screen, 'grey', [200, 760, 240, 80], 3, 5)
+    hit_text = smaller_font.render('Hit me', True, 'white')
+    text_rect = hit_text.get_rect(center=hit.center)
+    screen.blit(hit_text, text_rect)
+Hier heb ik dus eerst alle code die nodig is om een knop te maken in een nieuwe functie draw_btn() gezet. Daarna heb ik bekeken welke waardes anders zijn bij iedere knop en deze als parameters van de functie gezet. Dus wanneer ik de functie aanroep, geef ik de juiste waardes als argumenten mee. Hier kreeg ik enkele fouten. Ik was de return btn vergeten, hierdoor stopte het spel wanneer ik op de startknop klikte. Ik had ookde breete en hoogte omgewisseld in de parameters, waardoor de knoppen een verkeerde vorm kregen. 
+
+De andere herhaling die ik zag was het roteren van de bruine en zwarte kaart. Daarom heb ik ook een aparte functie rotate_cards() gemaakt. Het is een heel korte functie maar het kan handig zijn als ik later nog andere kaarten wil roteren dan moet ik alleen maar die functie aanroepen. De waardes die veranderen heb ik ook als parameters gezet. En dezelfde deed ik voor de scoretekst die nu in de aparte functie   draw_summary() zit.
+
+feedback #4     De standaartterminologie voor launcher is spawner.
+Ik heb overal de naam launcher verandert naar spawner.
+
+feedback #2     pygame.image.load() in draw_cards()
+Ik gebruikte pygame.image.load() in draw_cards(), hierdoor werden de afbeeldingen telkens opnieuw van de harde schijf geladen wanneer draw_cards() werd uitgevoerd. Om dit op te lossen heb hiervoor ook een aparte functie load_img() aangemaakt. Deze functie gaat met een for-loop door alle kaarten van de lijst deck en laad voor elke kaart de juiste afbeelding. 
+Ik moest de afbeeldingen daarna ergens bewaren, dus ik werkte met een lege lijst card_images, maar toen merkte ik dat ik een probleem zou hebben om de kaartnaam aan de juiste afbeelding te koppelen. Om dit op te lossen heb ik van de lijst een dictionary gemaakt waar de naam van de kaart de key is en de afbeelding de value. Zo kan ik later de juiste afbeelding aan de hand van de kaarnaam terugvinden. 
+Daarna heb ik de load_img() een keer aangeroepen. Ten slotte heb ik de code die de afbeeldingen laadde en shaalt vervangen door het ophalen van de juiste afbeelding uit de dictionary. 
